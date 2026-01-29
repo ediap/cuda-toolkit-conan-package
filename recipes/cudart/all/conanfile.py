@@ -1,7 +1,8 @@
 from conan import ConanFile
-from conan.tools.files import get, symlinks, copy, replace_in_file, rename, rm, rmdir
+from conan.tools.files import get, symlinks, copy, rename, rm, rmdir
 from os.path import join, exists
 import shutil
+import os
 
 required_conan_version = ">=1.47.0"
 
@@ -46,7 +47,7 @@ class CudaRtConan(ConanFile):
                 shutil.copy(join(self.build_folder, "lib", "cudart.lib"), join(self.build_folder, "lib", "cudart_static.lib"))
             else:
                 os.symlink(join(self.build_folder, "lib", "libcudart.so"), join(self.build_folder, "lib", "libcudart_static.so"))
-                absolute_to_relative_symlinks(self, join(self.build_folder, "lib"))
+                symlinks.absolute_to_relative_symlinks(self, join(self.build_folder, "lib"))
         else:
             rmdir(self, join(self.build_folder, "bin"))
             rm(self, "*cudart.*", join(self.build_folder, "lib"))
@@ -54,7 +55,7 @@ class CudaRtConan(ConanFile):
                 shutil.copy(join(self.build_folder, "lib", "cudart_static.lib"), join(self.build_folder, "lib", "cudart.lib"))
             else:
                 os.symlink(join(self.build_folder, "lib", "libcudart_static.a"), join(self.build_folder, "lib", "libcudart.a"))
-                absolute_to_relative_symlinks(self, join(self.build_folder, "lib"))
+                symlinks.absolute_to_relative_symlinks(self, join(self.build_folder, "lib"))
 
     @property
     def _is_windows(self):
